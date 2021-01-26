@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
+	"regexp"
 
 	"github.com/ditashi/jsbeautifier-go/jsbeautifier"
 	"github.com/golang/protobuf/proto"
@@ -389,8 +390,12 @@ func (t *twirp) generateDoc() {
 	}
 	t.P()
 	for _, api := range t.apis {
-		anchor := strings.Replace(api.Path, "/", "", -1)
-		anchor = strings.Replace(anchor, ".", "", -1)
+		// anchor := strings.Replace(api.Path, "/", "", -1)
+		// anchor = strings.Replace(anchor, ".", "", -1)
+		re, _ := regexp.Compile("^/")
+		api.Path = re.ReplaceAllString(api.Path, "")
+		anchor := strings.Replace(api.Path, "/", "-", -1)
+		anchor = strings.Replace(anchor, ".", "-", -1)
 		anchor = strings.ToLower(anchor)
 
 		t.P(fmt.Sprintf("- [%s](#%s)", api.Path, anchor))
